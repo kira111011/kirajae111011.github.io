@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>书循环 · 校园二手教材平台</title>
+<style>
+:root{
+  --green:#2e7d4f; --green-l:#e8f5ee; --green-d:#1b5136;
+  --orange:#e8862e; --bg:#f6f8f6; --card:#ffffff;
+  --ink:#22302a; --muted:#7a8a82; --line:#e3eae5; --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
+button{cursor:pointer;font-family:inherit}
+
+/* ===== 顶栏 ===== */
+header{background:linear-gradient(135deg,var(--green-d),var(--green));color:#fff;padding:18px 6vw;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;letter-spacing:1px}
+.logo .ico{width:38px;height:38px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{background:rgba(255,255,255,.12);border:none;color:#fff;padding:8px 16px;border-radius:20px;font-size:14px;transition:.2s}
+nav button:hover{background:rgba(255,255,255,.28)}
+nav button.on{background:#fff;color:var(--green-d);font-weight:700}
+.publish-btn{background:var(--orange)!important;font-weight:700}
+
+/* ===== 统计横幅 ===== */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;padding:20px 6vw 6px}
+.stat{background:var(--card);border-radius:var(--radius);padding:16px 18px;box-shadow:0 1px 6px rgba(0,0,0,.06);text-align:center}
+.stat .num{font-size:28px;font-weight:800;color:var(--green)}
+.stat .num em{font-style:normal;color:var(--orange)}
+.stat .lbl{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ===== 主体 ===== */
+main{padding:14px 6vw 60px;max-width:1280px;margin:0 auto;width:100%}
+.searchbar{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 16px}
+.searchbar input{flex:1;min-width:200px;padding:11px 16px;border:1.5px solid var(--line);border-radius:24px;font-size:14px;outline:none;background:#fff;transition:.2s}
+.searchbar input:focus{border-color:var(--green)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:7px 15px;border-radius:18px;border:1.5px solid var(--line);background:#fff;font-size:13px;color:var(--muted);transition:.15s}
+.chip:hover{border-color:var(--green);color:var(--green)}
+.chip.on{background:var(--green);color:#fff;border-color:var(--green);font-weight:700}
+
+/* ===== 卡片 ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.book{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.07);transition:.2s;display:flex;flex-direction:column;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+.book:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(0,0,0,.13)}
+.cover{height:130px;display:flex;align-items:center;justify-content:center;font-size:40px;color:#fff;position:relative}
+.cover .tag{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.35);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;backdrop-filter:blur(4px)}
+.cover .cond{position:absolute;top:10px;right:10px;background:#fff;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:700}
+.cover .needtag{position:absolute;bottom:10px;left:10px;background:#e5453a;color:#fff;font-size:11px;padding:3px 8px;border-radius:10px;font-weight:700;box-shadow:0 2px 8px rgba(229,69,58,.35)}
+.book .body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:6px}
+.book h3{font-size:15.5px;line-height:1.35}
+.book .course{font-size:12px;color:var(--muted)}
+.book .course b{color:var(--orange);font-weight:600}
+.book .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}
+.price{color:#d34e2a;font-weight:800;font-size:19px}
+.price s{color:#b9c4bd;font-size:12px;font-weight:400;margin-left:4px}
+.book .acts{display:flex;gap:6px}
+.mini{border:none;border-radius:8px;padding:6px 10px;font-size:12px;background:var(--green-l);color:var(--green-d);font-weight:600}
+.mini:hover{background:var(--green);color:#fff}
+.book .seller{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.avatar{width:20px;height:20px;border-radius:50%;background:var(--green-l);color:var(--green-d);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.sold{opacity:.55;filter:grayscale(.6)}
+.sold .stamp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.sold .stamp span{border:2.5px solid #d34e2a;color:#d34e2a;font-weight:800;padding:4px 18px;border-radius:8px;transform:rotate(-14deg);font-size:18px;background:rgba(255,255,255,.75)}
+
+.empty{text-align:center;color:var(--muted);padding:60px 0;grid-column:1/-1}
+
+/* ===== 求购墙 ===== */
+.wanted{display:flex;flex-direction:column;gap:12px}
+.wcard{background:#fff;border-radius:var(--radius);padding:16px 20px;box-shadow:0 1px 6px rgba(0,0,0,.06);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.wcard .badge{background:#fdf1e4;color:var(--orange);font-weight:700;font-size:13px;padding:6px 12px;border-radius:10px;white-space:nowrap}
+.wcard .info{flex:1;min-width:180px}
+.wcard .info b{font-size:15px}
+.wcard .info .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.wcard .match{background:var(--green-l);color:var(--green-d);font-size:12.5px;padding:6px 12px;border-radius:18px;font-weight:600}
+.match.none{background:#f0f2f0;color:var(--muted)}
+
+/* ===== 匹配面板 ===== */
+.matchbox{background:linear-gradient(135deg,#fff8f1,#fff);border:1.5px solid #f5ddc0;border-radius:var(--radius);padding:20px 22px;margin-bottom:18px}
+.matchbox h3{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.matchline{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;flex-wrap:wrap}
+.matchline:last-child{border:none}
+.arrow{color:var(--green);font-weight:800}
+.rate{background:var(--green);color:#fff;font-size:11px;padding:2px 9px;border-radius:10px}
+
+/* ===== 弹窗 ===== */
+.mask{position:fixed;inset:0;background:rgba(20,30,25,.5);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.mask.show{display:flex}
+.modal{background:#fff;border-radius:18px;width:min(560px,100%);max-height:88vh;overflow:auto;padding:26px 28px;animation:pop .25s ease}
+.modal h2{font-size:19px;margin-bottom:4px}
+.modal .tip{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:10px 13px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none;font-family:inherit;transition:.15s}
+.field input:focus,.field select:focus{border-color:var(--green)}
+.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btnrow{display:flex;gap:10px;margin-top:6px}
+.btn-primary{flex:1;background:var(--green);color:#fff;border:none;padding:12px;border-radius:11px;font-size:15px;font-weight:700;transition:.2s}
+.btn-primary:hover{background:var(--green-d)}
+.btn-ghost{background:#eef2ef;border:none;padding:12px 22px;border-radius:11px;font-size:14px;color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:38px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:12px 26px;border-radius:24px;font-size:14px;z-index:200;transition:.35s;opacity:0;pointer-events:none}
+.toast.show{transform:translateX(-50%);opacity:1}
+.detail-cover{height:170px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:56px;color:#fff;margin-bottom:16px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+.kv .k{font-size:11.5px;color:var(--muted)}
+.kv .v{font-size:14px;font-weight:600;margin-top:2px}
+.msgs{background:var(--bg);border-radius:12px;padding:12px 14px;font-size:13px;max-height:130px;overflow:auto;margin:10px 0}
+.msgs p{padding:4px 0;border-bottom:1px dashed var(--line)}
+.msgs p:last-child{border:none}
+.msgs b{color:var(--green-d)}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:26px 0 40px}
+@media(max-width:600px){.fieldrow{grid-template-columns:1fr}.stats{padding:14px 4vw 4px}main{padding:10px 4vw 50px}}
+
+/* 新求购提醒角标 */
+nav button{position:relative}
+nav button .dot{
+  position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;line-height:18px;
+  padding:0 5px;border-radius:9px;background:#e5453a;color:#fff;font-size:11px;
+  font-weight:700;text-align:center;box-shadow:0 2px 6px rgba(229,69,58,.45);
+  animation:pop .3s ease;
+}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* 新求购强提醒条 */
+#noticeBar{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(180%);
+  z-index:9998;width:min(520px,92vw);background:linear-gradient(135deg,#e5453a,#c9342a);color:#fff;
+  border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;
+  box-shadow:0 12px 34px rgba(201,52,42,.42);transition:transform .32s cubic-bezier(.2,1.3,.4,1);}
+#noticeBar.show{transform:translateX(-50%) translateY(0)}
+#noticeBar .nt-t{flex:1;font-size:14px;line-height:1.4;font-weight:700;min-width:0}
+#noticeBar .nt-t small{display:block;font-weight:400;opacity:.9;font-size:12px;margin-top:3px}
+#noticeBar .nt-go{background:#fff;color:#c9342a;border:none;border-radius:18px;padding:8px 13px;font-size:13px;font-weight:700;white-space:nowrap}
+#noticeBar .nt-x{background:transparent;border:none;color:#fff;font-size:17px;opacity:.7;padding:2px 4px}
+
+/* 求购卡片未读标记 */
+.wcard.is-new{border-left:4px solid #e5453a;background:#fff7f6}
+.newtag{background:#e5453a;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:9px;margin-left:6px;vertical-align:middle}
+
+/* ===== 消息 ===== */
+.thread{display:flex;gap:12px;align-items:center;background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer;transition:.15s}
+.thread:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1)}
+.thread .av{width:42px;height:42px;border-radius:50%;background:var(--green-l);color:var(--green-d);display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 42px}
+.thread .tx{flex:1;min-width:0}
+.thread .tx b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thread .tx span{font-size:12px;color:var(--muted);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.thread .ud{background:#e5453a;color:#fff;font-size:11px;font-weight:700;min-width:18px;height:18px;line-height:18px;text-align:center;border-radius:9px;padding:0 5px}
+.thread .tm{font-size:11px;color:var(--muted);flex:0 0 auto}
+
+#chatModal{width:min(520px,100%);padding:0;display:flex;flex-direction:column;max-height:82vh;overflow:hidden}
+.chat-h{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.chat-h b{font-size:15px}
+.chat-h small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:400}
+.chat-b{padding:16px;overflow:auto;flex:1;background:var(--bg);min-height:240px;display:flex;flex-direction:column;gap:8px}
+.bub{max-width:80%;padding:9px 13px;border-radius:12px;font-size:13.5px;line-height:1.45;word-break:break-word}
+.bub.them{background:#fff;align-self:flex-start;border:1px solid var(--line)}
+.bub.me{background:var(--green);color:#fff;align-self:flex-end}
+.bub small{display:block;font-size:10px;opacity:.7;margin-top:3px}
+.chat-i{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff}
+.chat-i input{flex:1;padding:10px 14px;border:1.5px solid var(--line);border-radius:20px;outline:none;font-size:14px;font-family:inherit}
+.chat-i input:focus{border-color:var(--green)}
+.chat-i button{background:var(--green);color:#fff;border:none;border-radius:20px;padding:0 18px;font-weight:700;font-size:14px}
+.mini-btn{background:var(--green-l);color:var(--green-d);border:1px solid #cfe6da;border-radius:16px;padding:6px 12px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.mini-btn:hover{background:#d9efe3}
+</style>
+</head>
+<body>
+
+<div id="noticeBar">
+  <div class="nt-t" id="ntText"></div>
+  <button class="nt-go" id="ntGo">去看看 →</button>
+  <button class="nt-x" onclick="hideNotice()">✕</button>
+</div>
+
+<header>
+  <div class="hbar">
+    <div class="logo"><span class="ico">📚</span>书循环 · 校园二手教材平台</div>
+    <nav>
+      <button id="nav-sale" class="on" onclick="go('sale')">在售教材</button>
+      <button id="nav-wanted" onclick="go('wanted')">求购墙</button>
+      <button id="nav-match" onclick="go('match')">智能匹配</button>
+      <button id="nav-msg" onclick="go('msg')">消息</button>
+      <button class="publish-btn" onclick="openPublish()">＋ 发布教材</button>
+      <button onclick="openWantedForm()">我要求购</button>
+    </nav>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="num" id="st-books">0</div><div class="lbl">在售教材（本）</div></div>
+  <div class="stat"><div class="num" id="st-sold">0</div><div class="lbl">已循环（本）</div></div>
+  <div class="stat"><div class="num" id="st-save">¥0</div><div class="lbl">为同学节省（元）</div></div>
+  <div class="stat"><div class="num"><em id="st-wanted">0</em></div><div class="lbl">求购需求（条）</div></div>
+</div>
+
+<main>
+  <!-- 在售 -->
+  <section id="page-sale">
+    <div class="searchbar">
+      <input id="kw" placeholder="🔍 搜索书名 / 课程 / 老师昵称，如：化工原理" oninput="render()">
+      <div class="chips" id="catChips"></div>
+    </div>
+    <div class="grid" id="bookGrid"></div>
+  </section>
+
+  <!-- 求购墙 -->
+  <section id="page-wanted" style="display:none">
+    <div class="wanted" id="wantedList"></div>
+  </section>
+
+  <!-- 智能匹配 -->
+  <section id="page-match" style="display:none">
+    <div class="matchbox">
+      <h3>🤝 供需智能匹配</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:6px">系统按「课程代码 + 教材版本 + 价格区间」自动撮合求购需求与在售教材，优先推荐同宿舍楼卖家，当面交易零运费。</p>
+      <div id="matchList"></div>
+    </div>
+  </section>
+
+  <!-- 消息 -->
+  <section id="page-msg" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;flex-wrap:wrap;gap:10px">
+      <div style="font-size:13px;color:var(--muted)">我现在的身份：<b id="meName" style="color:var(--ink)"></b>
+        <button class="mini-btn" style="margin-left:8px" onclick="setMe()">改名</button>
+      </div>
+      <div style="font-size:12.5px;color:var(--muted)">和求购的同学、想买你书的同学在这里直接聊</div>
+    </div>
+    <div id="threadList"></div>
+  </section>
+</main>
+
+<footer>书循环 demo · 创新创业课程结业作品 · 数据仅存于本机浏览器，刷新后发布内容保留</footer>
+
+<!-- 发布弹窗 -->
+<div class="mask" id="pubMask">
+  <div class="modal">
+    <h2>📖 发布二手教材</h2>
+    <p class="tip">填完点击发布，立即上架到「在售教材」</p>
+    <div class="field"><label>书名 *</label><input id="p-title" placeholder="如：化工原理（上册）"></div>
+    <div class="fieldrow">
+      <div class="field"><label>课程名称</label><input id="p-course" placeholder="如：化工原理"></div>
+      <div class="field"><label>分类</label><select id="p-cat"><option>专业教材</option><option>公共课</option><option>考研考证</option><option>工具书</option></select></div>
+    </div>
+    <div class="fieldrow">
+      <div class="field"><label>原价（元）</label><input id="p-orig" type="number" placeholder="59"></div>
+      <div class="field"><label>售价（元）*</label><input id="p-price" type="number" placeholder="20"></div>
+    </div>
+    <div class="fieldrow">
+      <div class="field"><label>成色</label><select id="p-cond"><option>九成新</option><option>八成新</option><option>有笔记标注</option><option>轻微磨损</option></select></div>
+      <div class="field"><label>你的昵称</label><input id="p-seller" placeholder="如：大三学长"></div>
+    </div>
+    <div class="field"><label>备注</label><input id="p-note" placeholder="如：含期末复习笔记，8栋宿舍自提"></div>
+    <div class="btnrow">
+      <button class="btn-ghost" onclick="closeMask('pubMask')">取消</button>
+      <button class="btn-primary" onclick="doPublish()">立即发布</button>
+    </div>
+  </div>
+</div>
+
+<!-- 求购弹窗 -->
+<div class="mask" id="wantMask">
+  <div class="modal">
+    <h2>🙋 发布求购需求</h2>
+    <p class="tip">写下你下学期要用的书，系统自动为你匹配卖家</p>
+    <div class="field"><label>想买的书 *</label><input id="w-title" placeholder="如：物理化学（第五版）"></div>
+    <div class="fieldrow">
+      <div class="field"><label>课程名称</label><input id="w-course" placeholder="如：物理化学"></div>
+      <div class="field"><label>期望价格（元）</label><input id="w-price" type="number" placeholder="25"></div>
+    </div>
+    <div class="field"><label>你的昵称</label><input id="w-name" placeholder="如：26级新生"></div>
+    <div class="btnrow">
+      <button class="btn-ghost" onclick="closeMask('wantMask')">取消</button>
+      <button class="btn-primary" onclick="doWanted()">发布求购</button>
+    </div>
+  </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="mask" id="detailMask">
+  <div class="modal" id="detailBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 聊天弹窗 -->
+<div class="mask" id="chatMask">
+  <div class="modal" id="chatModal">
+    <div class="chat-h">
+      <div><b id="chatTitle">对话</b><small id="chatSub"></small></div>
+      <button class="btn-ghost" style="padding:6px 12px" onclick="closeMask('chatMask')">关闭</button>
+    </div>
+    <div class="chat-b" id="chatBody"></div>
+    <div class="chat-i">
+      <input id="chatInput" placeholder="说点什么，比如：书还在，明天下午图书馆门口？" onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">发送</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_COLORS={"专业教材":"#2e7d4f","公共课":"#3b6ea5","考研考证":"#8a5cbf","工具书":"#c07830"};
+const CAT_EMOJI={"专业教材":"🧪","公共课":"📐","考研考证":"📝","工具书":"📎"};
+
+let books=[
+ {id:1,title:"化工原理（上册）第5版",course:"化工原理 / 王老师班",cat:"专业教材",orig:59,price:20,cond:"有笔记标注",seller:"大三·陈学长",note:"含手写期末重点整理，8栋可自提",sold:false},
+ {id:2,title:"物理化学（第五版）下册",course:"物理化学 / 李老师班",cat:"专业教材",orig:62,price:25,cond:"九成新",seller:"考研上岸·周学姐",note:"考研上岸出书，几乎没写字",sold:false},
+ {id:3,title:"有机化学（第八版）",course:"有机化学",cat:"专业教材",orig:69,price:28,cond:"八成新",seller:"大四·刘同学",note:"习题详解另送",sold:false},
+ {id:4,title:"高等数学（同济第七版）上",course:"高等数学A",cat:"公共课",orig:49,price:15,cond:"有笔记标注",seller:"大二·小张",note:"前三章有铅笔笔记，可擦",sold:true},
+ {id:5,title:"新视野大学英语读写教程3",course:"大学英语（三）",cat:"公共课",orig:55,price:12,cond:"九成新",seller:"大三·Amy",note:"过了六级，书九九新",sold:false},
+ {id:6,title:"考研英语真题黄皮书",course:"考研英语一",cat:"考研考证",orig:89,price:35,cond:"轻微磨损",seller:"研一·学长",note:"2026版，答案解析齐全",sold:false},
+ {id:7,title:"化学反应工程（第三版）",course:"反应工程",cat:"专业教材",orig:58,price:22,cond:"九成新",seller:"大四·老王",note:"期末划的重点全在书里",sold:false},
+ {id:8,title:"线性代数（同济第六版）",course:"线性代数",cat:"公共课",orig:32,price:10,cond:"八成新",seller:"大二·小李",note:"期末91分，沾沾喜气",sold:false},
+ {id:9,title:"化工设计（第二版）",course:"化工设计",cat:"专业教材",orig:52,price:18,cond:"八成新",seller:"大四·赵同学",note:"配合课程设计用，附图纸一份",sold:false},
+ {id:10,title:"CET-6 六级真题试卷",course:"大学英语六级",cat:"考研考证",orig:45,price:14,cond:"轻微磨损",seller:"大三·阿凯",note:"只做了前两套，其余全新",sold:false},
+];
+let wanted=[
+ {id:1,title:"化工原理（上册）",course:"化工原理",price:22,name:"26级新生·小林"},
+ {id:2,title:"高等数学（同济第七版）上",course:"高等数学A",price:16,name:"26级新生·小方"},
+ {id:3,title:"物理化学（第五版）",course:"物理化学",price:28,name:"25级·学妹"},
+ {id:4,title:"新视野大学英语读写教程3",course:"大学英语（三）",price:12,name:"26级·新生"},
+];
+let msgs={};   // 会话：key="w_<求购id>" 或 "b_<书id>"，值=[{id,uid,name,txt,ts}]
+let filterCat="全部";
+
+/* ---------- 我是谁：每台手机一个身份 ---------- */
+let me={id:"",name:""};
+try{ me=JSON.parse(localStorage.getItem("bookloop_me")||"null")||me }catch(e){}
+if(!me.id){
+ me.id="u"+Math.random().toString(36).slice(2,8);
+ me.name="同学"+me.id.slice(-4).toUpperCase();
+ try{localStorage.setItem("bookloop_me",JSON.stringify(me))}catch(e){}
+}
+function setMe(){
+ const n=prompt("起个名字，别人在消息里看到的就是它",me.name);
+ if(n&&n.trim()){
+  me.name=n.trim().slice(0,12);
+  try{localStorage.setItem("bookloop_me",JSON.stringify(me))}catch(e){}
+  render();renderWanted();renderThreads();updateMsgBadge();
+  toast("✅ 现在你是「"+me.name+"」");
+ }
+}
+
+/* ---------- 会话与未读 ---------- */
+let readMap={},joined={};
+try{ readMap=JSON.parse(localStorage.getItem("bookloop_read")||"{}") }catch(e){}
+try{ joined=JSON.parse(localStorage.getItem("bookloop_joined")||"{}") }catch(e){}
+function join(k){ joined[k]=1; try{localStorage.setItem("bookloop_joined",JSON.stringify(joined))}catch(e){} }
+function markRead(k){
+ const last=(msgs[k]||[]).reduce((m,x)=>Math.max(m,x.ts||0),0);
+ readMap[k]=last;
+ try{localStorage.setItem("bookloop_read",JSON.stringify(readMap))}catch(e){}
+}
+function unreadOf(k){
+ return (msgs[k]||[]).filter(x=>x.uid!==me.id && (x.ts||0)>(readMap[k]||0)).length;
+}
+function lastTs(k){ return (msgs[k]||[]).reduce((m,x)=>Math.max(m,x.ts||0),0) }
+function wantedById(id){ return wanted.find(w=>String(w.id)===String(id)) }
+function bookById(id){ return books.find(b=>String(b.id)===String(id)) }
+function threadMeta(k){
+ const p=k.split("_"),kind=p[0],id=p.slice(1).join("_");
+ if(kind==="w"){ const w=wantedById(id); return {kind,id,title:w?w.title:"（求购已删除）",who:w?w.name:"",ownerUid:w&&w.uid}; }
+ const b=bookById(id); return {kind,id,title:b?b.title:"（教材已下架）",who:b?b.seller:"",ownerUid:b&&b.uid};
+}
+function isMyThread(k){
+ if(joined[k]) return true;
+ if((msgs[k]||[]).some(m=>m.uid===me.id)) return true;
+ const m=threadMeta(k);
+ return !!(m.ownerUid&&m.ownerUid===me.id);
+}
+function myThreads(){
+ return Object.keys(msgs)
+  .filter(k=>(msgs[k]||[]).length>0 && isMyThread(k))
+  .sort((a,b)=>lastTs(b)-lastTs(a));
+}
+
+/* ============ 共享数据层：所有设备共用一份数据 ============ */
+let SYNCED=false;          // 是否已连上服务端
+let unreadWanted=new Set(); // 别人新发、我还没看的求购 id
+let selfIds=new Set();      // 我自己刚发的，不提醒自己
+
+/* ---------- 已读记录：存本地，刷新/重开也不会丢 ---------- */
+const SEEN_KEY="bookloop_seen_wanted_v2";
+let seenWanted=new Set();
+let hasBaseline=false;
+try{
+ const raw=localStorage.getItem(SEEN_KEY);
+ if(raw!==null){ hasBaseline=true; JSON.parse(raw).forEach(x=>seenWanted.add(String(x))); }
+}catch(e){}
+
+function markSeen(ids){
+ ids.forEach(x=>seenWanted.add(String(x)));
+ try{ localStorage.setItem(SEEN_KEY,JSON.stringify([...seenWanted])) }catch(e){}
+}
+function persistUnread(){
+ try{ localStorage.setItem("bookloop_unread_wanted",JSON.stringify([...unreadWanted])) }catch(e){}
+}
+try{
+ JSON.parse(localStorage.getItem("bookloop_unread_wanted")||"[]").forEach(x=>unreadWanted.add(String(x)));
+}catch(e){}
+
+const TITLE0=document.title;
+function navBadge(){
+ const btn=document.getElementById("nav-wanted");
+ const n=unreadWanted.size;
+ if(btn){
+  let b=btn.querySelector(".dot");
+  if(n>0){
+   if(!b){ b=document.createElement("span"); b.className="dot"; btn.appendChild(b); }
+   b.textContent=n>99?"99+":n;
+  }else if(b){ b.remove(); }
+ }
+ // 标签页标题也带数字，切到别的页面也能看见
+ document.title = n>0 ? "("+n+") "+TITLE0 : TITLE0;
+}
+
+/* ---------- 顶部红色提醒条：比 toast 显眼得多 ---------- */
+let noticeTimer=null, noticeAction=null;
+function showBar(html,btn,action){
+ const bar=document.getElementById("noticeBar"), tx=document.getElementById("ntText"), go=document.getElementById("ntGo");
+ if(!bar||!tx) return;
+ tx.innerHTML=html;
+ go.textContent=btn;
+ noticeAction=action;
+ bar.classList.add("show");
+ clearTimeout(noticeTimer);
+ noticeTimer=setTimeout(hideNotice,12000);
+}
+function showNotice(fresh){
+ if(fresh.length===1){
+  showBar("📢 有人求购《"+esc(fresh[0].title)+"》<small>"+esc(fresh[0].name)+" · 预算 ¥"+fresh[0].price+"</small>",
+   "去回应 →",()=>{go("wanted");hideNotice()});
+ }else{
+  showBar("📢 有 "+fresh.length+" 条新求购<small>"+fresh.slice(0,3).map(w=>"《"+esc(w.title)+"》").join("、")+"</small>",
+   "去回应 →",()=>{go("wanted");hideNotice()});
+ }
+}
+function notifyMsg(list){
+ const f=list[0], m=threadMeta(f.k);
+ showBar("💬 <b>"+esc(f.x.name||"同学")+"</b> 发来消息<small>"+esc(String(f.x.txt).slice(0,42))+"</small>",
+  "去回复 →",()=>{hideNotice();openChat(f.k)});
+ beep();
+}
+function hideNotice(){
+ const bar=document.getElementById("noticeBar");
+ if(bar) bar.classList.remove("show");
+ clearTimeout(noticeTimer);
+}
+
+/* ---------- 提示音（浏览器要求先有交互，失败静默） ---------- */
+let audioCtx=null;
+function beep(){
+ try{
+  audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended") audioCtx.resume();
+  [0,0.16].forEach((t,i)=>{
+   const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+   o.type="sine"; o.frequency.value=i?1046:880;
+   g.gain.setValueAtTime(0.0001,audioCtx.currentTime+t);
+   g.gain.exponentialRampToValueAtTime(0.18,audioCtx.currentTime+t+0.02);
+   g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+t+0.14);
+   o.connect(g); g.connect(audioCtx.destination);
+   o.start(audioCtx.currentTime+t); o.stop(audioCtx.currentTime+t+0.16);
+  });
+ }catch(e){}
+}
+
+/* ---------- 收到新求购：角标 + 横幅 + 声音 + 标题 ---------- */
+function notifyWanted(fresh){
+ fresh.forEach(w=>unreadWanted.add(String(w.id)));
+ navBadge();
+ showNotice(fresh);
+ beep();
+}
+
+// ===== 本地安全支付后端地址 =====
+// 电脑访问用 localhost；手机访问请改成你的电脑局域网 IP，例如 http://192.168.1.8:3000
+const API_BASE = "http://localhost:3000";
+const SHARECODE = "";  // 本地模式不再需要 sharecode
+
+function apiUrl(path){
+  return API_BASE + path;
+}
+
+function money(n){ return "¥" + (Math.round(Number(n)*100)/100).toFixed(2); }
+
+let lastSig="";            // 数据指纹，用于判断是否需要重绘
+let polling=null;
+
+// 本地缓存仅作断网兜底
+try{
+ const sv=JSON.parse(localStorage.getItem("bookloop")||"null");
+ if(sv){books=sv.books||books;wanted=sv.wanted||wanted;msgs=sv.msgs||{}}
+}catch(e){}
+
+function sig(){
+ return books.map(b=>b.id+(b.sold?"*":"")).join(",")+"|"+
+        wanted.map(w=>w.id).join(",")+"|"+
+        JSON.stringify(msgs);
+}
+
+function paint(){
+ try{ render(); renderChips(); renderWanted(); renderMatch(); updateStats(); renderThreads(); updateMsgBadge(); }catch(e){}
+}
+
+// 把服务端返回的数据装进内存，有变化才重绘
+// 新发布的（时间戳 id）排前面，示例数据保持原顺序
+function sortBooks(arr){
+ const big=arr.filter(b=>Number(b.id)>1e12).sort((a,b)=>Number(b.id)-Number(a.id));
+ const small=arr.filter(b=>Number(b.id)<=1e12);
+ return big.concat(small);
+}
+function sortWanted(arr){
+ const big=arr.filter(w=>Number(w.id)>1e12).sort((a,b)=>Number(b.id)-Number(a.id));
+ const small=arr.filter(w=>Number(w.id)<=1e12);
+ return big.concat(small);
+}
+
+let msgBaseline=false;
+function adopt(d){
+ if(!d || !Array.isArray(d.books)) return;
+ const s1=sig();
+ const oldMsgs=msgs;
+ if(Array.isArray(d.books)) books=sortBooks(d.books);
+ if(Array.isArray(d.wanted)) wanted=sortWanted(d.wanted);
+ if(d.msgs) msgs=d.msgs;
+ const s2=sig();
+
+ // 第一次进这个浏览器：把已有求购当基线，不一次性炸一堆提醒
+ if(!hasBaseline){
+  hasBaseline=true;
+  markSeen(wanted.map(w=>w.id));
+ }else{
+  // 之后只要出现"我没见过、也不是我自己发的"求购，就提醒
+  const fresh=wanted.filter(w=>!selfIds.has(String(w.id)) && !seenWanted.has(String(w.id)));
+  if(fresh.length){
+   fresh.forEach(w=>unreadWanted.add(String(w.id)));
+   markSeen(fresh.map(w=>w.id));
+   persistUnread();
+   notifyWanted(fresh);
+  }
+ }
+
+ // 新消息：只提醒"和我有关"的会话，自己发的不算
+ if(msgBaseline){
+  const freshMsg=[];
+  Object.keys(msgs).forEach(k=>{
+   if(!isMyThread(k)) return;
+   const before=new Set((oldMsgs[k]||[]).map(x=>x.id));
+   (msgs[k]||[]).forEach(x=>{ if(!before.has(x.id)&&x.uid!==me.id) freshMsg.push({k,x}); });
+  });
+  if(freshMsg.length){
+   freshMsg.sort((a,b)=>(a.x.ts||0)-(b.x.ts||0));
+   notifyMsg(freshMsg);
+   if(chatKey===freshMsg[0].k) renderChat();
+  }
+ }else{ msgBaseline=true; }
+ updateMsgBadge();
+
+ if(s1!==s2){ lastSig=s2; paint(); }
+}
+
+// 提交本地全量 → 服务端合并 → 回传权威数据
+async function push(){
+ if(!SYNCED) return false;
+ try{
+  const r=await fetch(apiUrl("/api/data"),{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({books,wanted,msgs})
+  });
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  SYNCED=true; setBadge(true);
+  adopt(d);
+  return true;
+ }catch(e){ SYNCED=false; setBadge(false); return false; }
+}
+
+async function save(){
+ try{localStorage.setItem("bookloop",JSON.stringify({books,wanted,msgs}))}catch(e){}
+ return await push();
+}
+
+// 轮询：别人发布的内容几秒内自动出现在你屏幕上
+let pollTimer=null, failCount=0, offlineNotified=false;
+// 8 秒超时，避免服务器无响应时请求越堆越多
+async function getJSON(path,ms=8000){
+ const c=new AbortController();
+ const t=setTimeout(()=>c.abort(),ms);
+ try{
+  const r=await fetch(path,{cache:"no-store",signal:c.signal});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return await r.json();
+ }finally{ clearTimeout(t); }
+}
+async function pollNow(){
+ if(!SYNCED){ await initShared(); return; }
+ try{
+  const d=await getJSON(apiUrl("/api/data"));
+  failCount=0; offlineNotified=false; SYNCED=true; setBadge(true);
+  adopt(d);
+ }catch(e){
+  failCount++;
+  // 连续失败才算掉线，避免偶发超时误报
+  if(failCount>=2){
+   SYNCED=false; setBadge(false);
+   if(!offlineNotified){
+    offlineNotified=true;
+    toast("⚠️ 与服务器断开，正在自动重连…");
+   }
+  }
+ }
+}
+function startPolling(){
+ if(pollTimer) clearInterval(pollTimer);
+ // 2 秒一次，够快；切回页面时还会立即补一次
+ pollTimer=setInterval(pollNow,2000);
+}
+// 手机切到微信再切回来，浏览器会限制定时器，这里立刻补拉一次
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) pollNow(); });
+window.addEventListener("focus",()=>pollNow());
+window.addEventListener("online",()=>{ failCount=0; pollNow(); });
+
+async function initShared(){
+ try{
+  const d=await getJSON(apiUrl("/api/data"));
+  SYNCED=true;
+
+  if(d && Array.isArray(d.books) && d.books.length>0){
+   // 服务端已有数据：只读拉取，绝不覆盖，避免重复
+   adopt(d);
+  }else{
+   // 服务端为空：把本地/示例数据播种上去
+   const r2=await fetch(apiUrl("/api/data"),{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({books,wanted,msgs})
+   });
+   adopt(await r2.json());
+  }
+  lastSig=sig();
+  setBadge(true);
+  failCount=0; offlineNotified=false;
+  navBadge();
+  // 刷新后如果还有没看的求购，横幅继续挂着，不会“一刷新就消失”
+  const un=wanted.filter(w=>unreadWanted.has(String(w.id)));
+  if(un.length) showNotice(un);
+ }catch(e){
+  SYNCED=false;
+  setBadge(false);
+ }
+ // 无论首连成功与否都要开始轮询，否则断线后永远连不回来
+ startPolling();
+}
+
+function setBadge(ok){
+ let el=document.getElementById("syncBadge");
+ if(!el){
+  el=document.createElement("div");
+  el.id="syncBadge";
+  el.style.cssText="position:fixed;right:14px;bottom:14px;z-index:9999;font-size:12px;"+
+   "padding:8px 14px;border-radius:22px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.22);"+
+   "font-family:inherit;cursor:pointer;transition:.25s;user-select:none";
+  el.onclick=()=>{
+   if(el.dataset.off==="1"){ toast("正在重连…"); SYNCED=false; failCount=0; pollNow(); return; }
+   const u=location.origin;
+   navigator.clipboard&&navigator.clipboard.writeText(u);
+   toast("网址已复制：" + u);
+  };
+  document.body.appendChild(el);
+ }
+ el.dataset.off = ok ? "0" : "1";
+ el.textContent = ok ? "🌐 已联网 · 实时同步" : "⚠️ 已断线 · 点此重连";
+ el.style.background = ok ? "linear-gradient(135deg,#1f8a5a,#2fb37a)" : "#e5453a";
+ el.title = ok ? "点击复制网址，发给同学手机打开" : "未连上服务端，数据只在本机，点击重试";
+}
+
+const $=id=>document.getElementById(id);
+function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2200)}
+function openMask(id){$(id).classList.add("show")}
+function closeMask(id){$(id).classList.remove("show")}
+
+/* 导航 */
+function go(page){
+ ["sale","wanted","match","msg"].forEach(p=>{
+   $("page-"+p).style.display=p===page?"":"none";
+   $("nav-"+p).classList.toggle("on",p===page);
+ });
+ if(page==="wanted"){
+  renderWanted();
+  markSeen(wanted.map(w=>w.id));
+  unreadWanted.clear(); persistUnread(); navBadge(); hideNotice();
+ }
+ if(page==="match")renderMatch();
+ if(page==="msg")renderThreads();
+}
+
+/* 分类chips */
+function renderChips(){
+ const cats=["全部",...Object.keys(CAT_COLORS)];
+ $("catChips").innerHTML=cats.map(c=>`<button class="chip ${c===filterCat?"on":""}" onclick="filterCat='${c}';render();renderChips()">${c}</button>`).join("");
+}
+
+/* 渲染在售 */
+function render(){
+ const kw=$("kw").value.trim().toLowerCase();
+ const list=books.filter(b=>
+   (filterCat==="全部"||b.cat===filterCat)&&
+   (!kw||b.title.toLowerCase().includes(kw)||b.course.toLowerCase().includes(kw)||b.seller.toLowerCase().includes(kw))
+ );
+ $("bookGrid").innerHTML=list.length?list.map(b=>{
+  const need=b.sold?0:wanted.filter(w=>w.uid!==me.id && (
+    b.title.includes(w.title.slice(0,4)) || (w.course&&b.course.includes(w.course.slice(0,3)))
+  )).length;
+  return `
+  <div class="book ${b.sold?"sold":""}">
+    <div class="cover" style="background:${CAT_COLORS[b.cat]}">
+      <span>${CAT_EMOJI[b.cat]}</span>
+      <span class="tag">${b.cat}</span>
+      <span class="cond">${b.cond}</span>
+      ${need?`<span class="needtag">🔥 ${need} 人求购</span>`:""}
+      ${b.sold?'<div class="stamp"><span>已循环</span></div>':""}
+    </div>
+    <div class="body">
+      <h3>${esc(b.title)}</h3>
+      <div class="course">📖 <b>${esc(b.course)}</b></div>
+      <div class="seller"><span class="avatar">${esc(b.seller[0])}</span>${esc(b.seller)}</div>
+      <div class="row">
+        <div class="price">¥${b.price}<s>¥${b.orig}</s></div>
+        <div class="acts">
+          <button class="mini" onclick="openDetail(${b.id})">详情</button>
+          ${b.sold?"":`<button class="mini" onclick="buy(${b.id})">购买</button>`}
+        </div>
+      </div>
+    </div>
+  </div>`}).join(""):'<div class="empty">😢 没找到相关教材，去求购墙发一条需求吧</div>';
+ updateStats();
+}
+function updateStats(){
+ $("st-books").textContent=books.filter(b=>!b.sold).length;
+ $("st-sold").textContent=books.filter(b=>b.sold).length;
+ $("st-save").textContent="¥"+books.filter(b=>b.sold).reduce((s,b)=>s+(b.orig-b.price),0);
+ $("st-wanted").textContent=wanted.length;
+}
+
+/* 详情 */
+function openDetail(id){
+ const b=books.find(x=>x.id===id);
+ const k="b_"+id;
+ const arr=(msgs[k]||[]).slice().sort((a,b)=>(a.ts||0)-(b.ts||0)).slice(-3);
+ const m=arr.map(x=>`<p><b>${esc(x.name||x.who||"同学")}：</b>${esc(x.txt)}</p>`).join("")
+   ||"<p style='color:var(--muted)'>还没有人留言，点下面按钮直接问卖家</p>";
+ $("detailBody").innerHTML=`
+  <div class="detail-cover" style="background:${CAT_COLORS[b.cat]}">${CAT_EMOJI[b.cat]}</div>
+  <h2>${esc(b.title)}</h2>
+  <p class="tip">${esc(b.note||"")}</p>
+  <div class="kv">
+    <div><div class="k">课程</div><div class="v">${esc(b.course)}</div></div>
+    <div><div class="k">成色</div><div class="v">${esc(b.cond)}</div></div>
+    <div><div class="k">原价</div><div class="v">¥${b.orig}</div></div>
+    <div><div class="k">售价</div><div class="v" style="color:#d34e2a">¥${b.price}</div></div>
+  </div>
+  <div class="seller"><span class="avatar">${esc(b.seller[0])}</span>${esc(b.seller)} 发布</div>
+  <div class="msgs">${m}</div>
+  <div class="btnrow">
+    <button class="btn-ghost" onclick="closeMask('detailMask')">关闭</button>
+    <button class="btn-primary" onclick="closeMask('detailMask');contactBook(${b.id})">💬 和卖家聊聊</button>
+  </div>`;
+ openMask("detailMask");
+}
+/* ================= 对接本地安全支付后端 ================= */
+let currentOrder = null;
+let payingBookId = null;
+
+async function buy(id){
+  const b = books.find(x => x.id === id);
+  if (!b) return;
+  if (b.sold) return toast("这本书已经被买走了");
+  if (b.uid === me.id) return toast("这是你自己发布的书哦");
+
+  payingBookId = id;
+  closeMask("detailMask");
+
+  try {
+    // 1. 服务端创建订单（锁定价格）
+    const res = await fetch(apiUrl("/api/order/create"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-User-Id": me.id,
+        "X-User-Name": encodeURIComponent(me.name)
+      },
+      body: JSON.stringify({ bookId: b.id })
+    });
+    const data = await res.json();
+    if (!data.ok) return toast(data.msg || "创建订单失败");
+
+    currentOrder = data.order;
+
+    // 显示支付确认弹窗
+    $("payBody").innerHTML = `
+      <h2>💳 在线支付</h2>
+      <p class="tip">确认支付后将完成交易</p>
+      <div style="text-align:center;font-size:36px;font-weight:800;color:#d34e2a;margin:16px 0">${money(currentOrder.price)}</div>
+      <div style="font-size:14px;margin-bottom:8px">《${esc(currentOrder.title)}》</div>
+      <div style="font-size:14px;margin-bottom:18px;text-align:center">《${esc(currentOrder.title)}》</div>
+      <div class="btnrow">
+        <button class="btn-ghost" onclick="closeMask('payMask')">取消</button>
+        <button class="btn-primary" style="background:linear-gradient(135deg,#ff9a3d,#f2700d)" onclick="doSecurePay()">确认支付</button>
+      </div>`;
+    openMask("payMask");
+  } catch (e) {
+    console.error(e);
+    toast("网络错误，请确认本地后端已启动 (node server.js)");
+  }
+}
+
+async function doSecurePay(){
+  if (!currentOrder) return toast("订单已失效，请重新发起");
+
+  try {
+    // 2. 发起支付
+    const payRes = await fetch(apiUrl("/api/order/pay"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-User-Id": me.id,
+        "X-User-Name": encodeURIComponent(me.name)
+      },
+      body: JSON.stringify({
+        orderId: currentOrder.id,
+        clientNonce: currentOrder.clientNonce
+      })
+    });
+    const payData = await payRes.json();
+    if (!payData.ok) return toast(payData.msg || "发起支付失败");
+
+    // 3. 模拟支付回调
+    const notifyRes = await fetch(apiUrl("/api/pay/notify"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId: currentOrder.id,
+        payToken: payData.payToken,
+        amount: payData.amount
+      })
+    });
+    const notifyData = await notifyRes.json();
+    if (!notifyData.ok) return toast(notifyData.msg || "支付回调失败");
+
+    // 刷新数据
+    if (typeof pollNow === "function") await pollNow();
+    render(); updateStats();
+    if (typeof renderThreads === "function") renderThreads();
+
+    $("payBody").innerHTML = `
+      <div style="text-align:center;font-size:48px;margin:10px 0">✅</div>
+      <h2 style="text-align:center">支付成功</h2>
+      <div style="text-align:center;font-size:28px;font-weight:800;color:#d34e2a;margin:12px 0">${money(currentOrder.price)}</div>
+      <div style="text-align:center;font-size:14px;margin-bottom:8px">《${esc(currentOrder.title)}》</div>
+      <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.8;margin-bottom:18px">
+        订单号：${currentOrder.id}<br>
+        交易已完成，请与卖家约定交书时间
+      </div>
+      <div class="btnrow">
+        <button class="btn-ghost" onclick="closeMask('payMask')">关闭</button>
+        <button class="btn-primary" onclick="closeMask('payMask');openChat('b_'+${payingBookId},'我已支付，约个时间交书吧')">联系卖家交书</button>
+      </div>`;
+  } catch (e) {
+    console.error(e);
+    toast("支付过程出错，请确认后端已启动");
+  }
+}
+
+
+/* ===== 聊天 ===== */
+let chatKey="";
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function addMsg(k,txt){
+ const m={id:"m"+Date.now()+Math.random().toString(36).slice(2,6),uid:me.id,name:me.name,txt,ts:Date.now()};
+ (msgs[k]=msgs[k]||[]).push(m);
+ markRead(k);
+ save();
+}
+function openChat(k,preset){
+ chatKey=k; join(k);
+ const m=threadMeta(k);
+ $("chatTitle").textContent=(m.kind==="w"?"求购《"+m.title+"》":"《"+m.title+"》");
+ $("chatSub").textContent=(m.who?"对方："+m.who+"　":"")+"我："+me.name;
+ $("chatInput").value=preset||"";
+ renderChat(); markRead(k); updateMsgBadge(); renderThreads();
+ openMask("chatMask");
+ setTimeout(()=>{try{$("chatInput").focus()}catch(e){}},200);
+}
+function renderChat(){
+ const body=$("chatBody"); if(!body)return;
+ const arr=(msgs[chatKey]||[]).slice().sort((a,b)=>(a.ts||0)-(b.ts||0));
+ if(!arr.length){ body.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center;margin:auto">还没有消息，先打个招呼 👋</div>'; return; }
+ body.innerHTML=arr.map(x=>{
+  const mine=x.uid===me.id, t=new Date(x.ts||Date.now());
+  const hm=String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0");
+  return `<div class="bub ${mine?"me":"them"}">${esc(x.txt)}<small>${mine?"我":esc(x.name||"对方")} · ${t.getMonth()+1}/${t.getDate()} ${hm}</small></div>`;
+ }).join("");
+ body.scrollTop=body.scrollHeight;
+}
+function sendChat(){
+ const v=$("chatInput").value.trim();
+ if(!v)return;
+ addMsg(chatKey,v);
+ $("chatInput").value="";
+ renderChat(); renderThreads(); updateMsgBadge();
+}
+function contactWanted(id){
+ const w=wantedById(id); if(!w)return;
+ const myBook=books.find(b=>!b.sold && b.uid===me.id &&
+  (b.title.includes(w.title.slice(0,4)) || (w.course && b.course.includes(w.course.slice(0,3)))));
+ const t=myBook?myBook.title:w.title;
+ const p=myBook?myBook.price:(w.price||"面议");
+ openChat("w_"+w.id,"同学你好，我有《"+t+"》，¥"+p+" 可以吗？");
+}
+function contactBook(id){
+ const b=bookById(id); if(!b)return;
+ openChat("b_"+b.id,"同学你好，《"+b.title+"》还在吗？");
+}
+function renderThreads(){
+ const el=$("threadList"); if(!el)return;
+ const nm=$("meName"); if(nm)nm.textContent=me.name;
+ const ks=myThreads();
+ if(!ks.length){
+  el.innerHTML='<div style="background:#fff;border-radius:12px;padding:36px 20px;text-align:center;color:var(--muted);font-size:13.5px">还没有消息<br><span style="font-size:12.5px;display:inline-block;margin-top:6px">去「求购墙」点「我有这本书」，就能直接和求购的同学聊</span></div>';
+  return;
+ }
+ el.innerHTML=ks.map(k=>{
+  const m=threadMeta(k), arr=(msgs[k]||[]).slice().sort((a,b)=>(a.ts||0)-(b.ts||0)), last=arr[arr.length-1]||{}, n=unreadOf(k);
+  return `<div class="thread" onclick="openChat('${k}')">
+   <div class="av">${m.kind==="w"?"🙋":"📘"}</div>
+   <div class="tx"><b>${m.kind==="w"?"求购":"在售"}：${esc(m.title)}</b>
+    <span>${esc((last.uid===me.id?"我：":"")+(last.txt||""))}</span></div>
+   ${n?`<span class="ud">${n}</span>`:""}
+   <span class="tm">${last.ts?timeAgo(last.ts):""}</span>
+  </div>`;
+ }).join("");
+}
+function timeAgo(ts){
+ const d=Date.now()-ts;
+ if(d<60000)return "刚刚";
+ if(d<3600000)return Math.floor(d/60000)+" 分钟前";
+ const t=new Date(ts); return (t.getMonth()+1)+"/"+t.getDate();
+}
+function updateMsgBadge(){
+ const btn=$("nav-msg"); if(!btn)return;
+ const n=myThreads().reduce((s,k)=>s+unreadOf(k),0);
+ let b=btn.querySelector(".dot");
+ if(n>0){ if(!b){b=document.createElement("span");b.className="dot";btn.appendChild(b);} b.textContent=n>99?"99+":n; }
+ else if(b){ b.remove(); }
+}
+
+/* 求购墙 */
+function renderWanted(){
+ $("wantedList").innerHTML=wanted.map(w=>{
+  const hit=bestMatch(w);
+  const isNew=unreadWanted.has(String(w.id));
+  const mine=w.uid&&w.uid===me.id;
+  const n=unreadOf("w_"+w.id);
+  // 我自己的在售书里，有没有能对上这条求购的
+  const myBook=books.find(b=>!b.sold && b.uid===me.id &&
+    (b.title.includes(w.title.slice(0,4)) || (w.course && b.course.includes(w.course.slice(0,3)))));
+  const btn=myBook
+    ? `<button class="mini-btn" style="background:#fff3e6;border-color:#f2d3ab;color:#a85b12" onclick="contactWanted(${w.id})">卖我的这本${n?" · "+n:""}</button>`
+    : `<button class="mini-btn" onclick="contactWanted(${w.id})">我有这本书${n?" · "+n:""}</button>`;
+  return `<div class="wcard${isNew?" is-new":""}">
+   <span class="badge">求购</span>
+   <div class="info"><b>${esc(w.title)}</b>${isNew?'<span class="newtag">新</span>':""}<div class="sub">${esc(w.course)} · 期望 ¥${w.price} · ${esc(w.name)}</div></div>
+   ${mine?`<span class="match none">我的求购</span>`:btn}
+   ${hit?`<span class="match">✅ 已匹配：《${esc(hit.title)}》¥${hit.price}（${esc(hit.seller)}）</span>`:`<span class="match none">⏳ 暂无匹配，等待上架</span>`}
+  </div>`}).join("");
+}
+function bestMatch(w){
+ const kw=(w.title.match(/[\u4e00-\u9fa5a-zA-Z]+/g)||[""]).join("").toLowerCase();
+ return books.find(b=>!b.sold&&b.price<=w.price&&(
+   b.title.includes(w.title.slice(0,4))||
+   (w.course&&b.course.includes(w.course.slice(0,3)))
+ ));
+}
+
+/* 智能匹配 */
+function renderMatch(){
+ const lines=wanted.map(w=>{
+  const hit=bestMatch(w);
+  if(!hit)return `<div class="matchline">⏳ 「${w.title}」（${w.name}，预算¥${w.price}）<span class="match none">暂无货源</span></div>`;
+  const saving=w.price-hit.price;
+  return `<div class="matchline">
+    🙋 ${w.name} 求《${w.title}》预算¥${w.price}
+    <span class="arrow">→</span>
+    📚 《${hit.title}》¥${hit.price}（${hit.seller}）
+    <span class="rate">匹配度 ${hit.title.includes(w.title.slice(0,4))?"95%":"80%"}${saving>0?" · 预算内省 ¥"+saving:""}</span>
+  </div>`}).join("");
+ $("matchList").innerHTML=lines||'<div class="matchline">暂无求购需求</div>';
+}
+
+/* 发布 */
+function openPublish(){["p-title","p-course","p-orig","p-price","p-note"].forEach(i=>$(i).value="");openMask("pubMask")}
+function doPublish(){
+ const t=$("p-title").value.trim(),p=$("p-price").value;
+ if(!t||!p)return toast("书名和售价必填哦");
+ const _nb={id:Date.now(),uid:me.id,title:t,course:$("p-course").value.trim()||"未填课程",cat:$("p-cat").value,
+   orig:+$("p-orig").value||+p*3,price:+p,cond:$("p-cond").value,seller:$("p-seller").value.trim()||me.name,
+   note:$("p-note").value.trim(),sold:false};
+ selfIds.add(String(_nb.id));
+ books.unshift(_nb);
+ closeMask("pubMask");go("sale");render();renderChips();
+ toast("🎉 发布成功，正在同步…");
+ save().then(ok=>{ if(!ok) toast("⚠️ 网络异常：这本书目前只有你自己能看到"); });
+}
+function openWantedForm(){["w-title","w-course","w-price","w-name"].forEach(i=>$(i).value="");openMask("wantMask")}
+function doWanted(){
+ const t=$("w-title").value.trim();
+ if(!t)return toast("书名必填哦");
+ const _nw={id:Date.now(),uid:me.id,title:t,course:$("w-course").value.trim()||"未填",price:+$("w-price").value||0,name:$("w-name").value.trim()||me.name};
+ selfIds.add(String(_nw.id));
+ markSeen([_nw.id]);   // 自己发的，不提醒自己
+ wanted.unshift(_nw);
+ closeMask("wantMask");go("wanted");updateStats();
+ toast("✅ 求购已发布，正在同步…");
+ save().then(ok=>{
+  if(ok) toast("✅ 已同步：别人最多 2 秒就能看到这条求购");
+  else toast("⚠️ 网络异常：这条只有你自己能看到，请检查网络后重发");
+ });
+}
+
+/* 点遮罩关闭 */
+document.querySelectorAll(".mask").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("show")}));
+
+/* 提醒条右侧按钮：按当前提醒类型跳转 */
+document.getElementById("ntGo").addEventListener("click",()=>{
+ const a=noticeAction; noticeAction=null;
+ if(a) a(); else { go("wanted"); hideNotice(); }
+});
+
+renderChips();render();renderThreads();updateMsgBadge();
+initShared();
+</script>
+
+<!-- 支付弹窗 -->
+<div class="mask" id="payMask">
+  <div class="modal" id="payBody">
+    <h2>💳 在线支付</h2>
+    <p class="tip">加载中...</p>
+  </div>
+</div>
+
+</body>
+</html>
