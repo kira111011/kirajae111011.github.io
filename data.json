@@ -1,0 +1,208 @@
+{
+  "books": [
+    {
+      "id": 1794321500698,
+      "uid": "u7hfy2g",
+      "title": "搞点",
+      "course": "搞",
+      "cat": "专业教材",
+      "orig": 60,
+      "price": 20,
+      "cond": "九成新",
+      "seller": "所有人之爹",
+      "note": "",
+      "sold": false
+    },
+    {
+      "id": 1,
+      "title": "化工原理（上册）第5版",
+      "course": "化工原理 / 王老师班",
+      "cat": "专业教材",
+      "orig": 59,
+      "price": 20,
+      "cond": "有笔记标注",
+      "seller": "大三·陈学长",
+      "note": "含手写期末重点整理，8栋可自提",
+      "sold": true,
+      "uid": "seller001"
+    },
+    {
+      "id": 2,
+      "title": "物理化学（第五版）下册",
+      "course": "物理化学 / 李老师班",
+      "cat": "专业教材",
+      "orig": 62,
+      "price": 25,
+      "cond": "九成新",
+      "seller": "考研上岸·周学姐",
+      "note": "考研上岸出书，几乎没写字",
+      "sold": true,
+      "uid": "seller002"
+    },
+    {
+      "id": 3,
+      "title": "有机化学（第八版）",
+      "course": "有机化学",
+      "cat": "专业教材",
+      "orig": 69,
+      "price": 28,
+      "cond": "八成新",
+      "seller": "大四·刘同学",
+      "note": "习题详解另送",
+      "sold": true,
+      "uid": "seller003"
+    },
+    {
+      "id": 4,
+      "title": "高等数学（同济第七版）上",
+      "course": "高等数学A",
+      "cat": "公共课",
+      "orig": 49,
+      "price": 15,
+      "cond": "有笔记标注",
+      "seller": "大二·小张",
+      "note": "前三章有铅笔笔记，可擦",
+      "sold": false,
+      "uid": "seller004"
+    },
+    {
+      "id": 5,
+      "title": "新视野大学英语读写教程3",
+      "course": "大学英语（三）",
+      "cat": "公共课",
+      "orig": 55,
+      "price": 12,
+      "cond": "九成新",
+      "seller": "大三·Amy",
+      "note": "过了六级，书九九新",
+      "sold": false,
+      "uid": "seller005"
+    },
+    {
+      "id": 6,
+      "title": "考研英语真题黄皮书",
+      "course": "考研英语一",
+      "cat": "考研考证",
+      "orig": 89,
+      "price": 35,
+      "cond": "轻微磨损",
+      "seller": "研一·学长",
+      "note": "2026版，答案解析齐全",
+      "sold": false,
+      "uid": "seller006"
+    },
+    {
+      "id": 7,
+      "title": "化学反应工程（第三版）",
+      "course": "反应工程",
+      "cat": "专业教材",
+      "orig": 58,
+      "price": 22,
+      "cond": "九成新",
+      "seller": "大四·老王",
+      "note": "期末划的重点全在书里",
+      "sold": false,
+      "uid": "seller007"
+    },
+    {
+      "id": 8,
+      "title": "线性代数（同济第六版）",
+      "course": "线性代数",
+      "cat": "公共课",
+      "orig": 32,
+      "price": 10,
+      "cond": "八成新",
+      "seller": "大二·小李",
+      "note": "期末91分，沾沾喜气",
+      "sold": false,
+      "uid": "seller008"
+    }
+  ],
+  "wanted": [],
+  "msgs": {
+    "b_2": [
+      {
+        "id": "m1794320574792",
+        "uid": "u7hfy2g",
+        "name": "同学FY2G",
+        "txt": "【已支付】¥25.00（平台佣金 3% = ¥0.75，你到账 ¥24.25），约个时间交书吧！",
+        "ts": 1794320574792
+      }
+    ],
+    "b_3": [
+      {
+        "id": "m1794320643262",
+        "uid": "u7hfy2g",
+        "name": "同学FY2G",
+        "txt": "【已支付】¥28.00（平台佣金 3% = ¥0.84，你到账 ¥27.16），约个时间交书吧！",
+        "ts": 1794320643262
+      },
+      {
+        "id": "m1794320651582hktr",
+        "uid": "u7hfy2g",
+        "name": "同学FY2G",
+        "txt": "我已支付，约个时间交书吧",
+        "ts": 1794320651582
+      }
+    ],
+    "b_1": [
+      {
+        "id": "m1794321297844",
+        "uid": "u7hfy2g",
+        "name": "同学FY2G",
+        "txt": "【已支付】¥20.00（平台佣金 3% = ¥0.60，你到账 ¥19.40），约个时间交书吧！",
+        "ts": 1794321297844
+      }
+    ]
+  },
+  "orders": [
+    {
+      "id": "o1794321295449-ddc0ab4d",
+      "bookId": 1,
+      "title": "化工原理（上册）第5版",
+      "price": 20,
+      "fee": 0.6,
+      "payout": 19.4,
+      "buyerUid": "u7hfy2g",
+      "buyerName": "同学FY2G",
+      "sellerUid": "seller001",
+      "sellerName": "大三·陈学长",
+      "status": "paid",
+      "createdAt": 1794321295449,
+      "paidAt": 1794321297844,
+      "clientNonce": "adaa5a34-e050-4d26-b3e1-e37be0ff28b9"
+    },
+    {
+      "id": "o1794320581197-1f9bdf8d",
+      "bookId": 3,
+      "title": "有机化学（第八版）",
+      "price": 28,
+      "fee": 0.84,
+      "payout": 27.16,
+      "buyerUid": "u7hfy2g",
+      "buyerName": "同学FY2G",
+      "sellerUid": "seller003",
+      "sellerName": "大四·刘同学",
+      "status": "paid",
+      "createdAt": 1794320581197,
+      "paidAt": 1794320643262,
+      "clientNonce": "9b23e500-4f1f-4577-86bb-f57e8e5afdc3"
+    },
+    {
+      "id": "o1794320573029-43a3ff4d",
+      "bookId": 2,
+      "title": "物理化学（第五版）下册",
+      "price": 25,
+      "fee": 0.75,
+      "payout": 24.25,
+      "buyerUid": "u7hfy2g",
+      "buyerName": "同学FY2G",
+      "sellerUid": "seller002",
+      "sellerName": "考研上岸·周学姐",
+      "status": "paid",
+      "createdAt": 1794320573030,
+      "paidAt": 1794320574792,
+      "clientNonce": "248e02bb-967b-4b9a-9af6-be04eda71dde"
+    }
+  ]
+}
