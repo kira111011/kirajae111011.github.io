@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>书循环 · 校园二手教材平台</title>
+<meta name="description" content="书循环 —— 校园二手教材流转平台，让课本在上一个年级和下一个年级之间循环起来。" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f6b52'/%3E%3Ctext x='50' y='72' font-size='62' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%E4%B9%A6%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<!-- ================= 顶部导航 ================= -->
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark">书</span>
+      <span class="brand-text">
+        <strong>书循环</strong>
+        <small>校园二手教材平台</small>
+      </span>
+    </a>
+
+    <nav class="topnav">
+      <a class="topnav-link active" href="#list">在售教材</a>
+      <a class="topnav-link" href="#how">交易流程</a>
+      <a class="topnav-link" href="#orders">成交动态</a>
+    </nav>
+
+    <div class="topbar-actions">
+      <span class="campus-pill">📍 校本部</span>
+      <button class="btn btn-primary" id="btnOpenPublish">
+        <span class="plus">+</span> 发布旧书
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= Hero ================= -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">闲置课本 · 校内自提 · 当面验书</span>
+        <h1>让课本<br /><em>多循环</em>一次</h1>
+        <p class="hero-desc">
+          学长学姐的旧教材，八成新、有笔记、还带着期末重点。
+          比新书便宜一大半，同校当面交易，不用等快递。
+        </p>
+
+        <div class="searchbar">
+          <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <input id="searchInput" type="search" placeholder="搜书名 / 课程 / 老师，比如「化工原理」" autocomplete="off" />
+          <button class="btn btn-primary search-btn" id="btnSearch">搜索</button>
+        </div>
+
+        <div class="hero-stats" id="heroStats">
+          <div class="stat"><b id="statOnSale">–</b><span>本在售</span></div>
+          <div class="stat"><b id="statSaved">–</b><span>元已省下</span></div>
+          <div class="stat"><b id="statOrders">–</b><span>笔已预订</span></div>
+        </div>
+      </div>
+
+      <div class="hero-deco" aria-hidden="true">
+        <div class="deco-book b1"><span>化工原理</span></div>
+        <div class="deco-book b2"><span>物理化学</span></div>
+        <div class="deco-book b3"><span>线性代数</span></div>
+        <div class="deco-ring"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 列表 ================= -->
+  <section class="section" id="list">
+    <div class="wrap">
+
+      <div class="list-head">
+        <div class="list-title">
+          <h2>在售教材</h2>
+          <span class="result-count" id="resultCount">加载中…</span>
+        </div>
+
+        <div class="list-tools">
+          <div class="chips" id="categoryChips">
+            <button class="chip active" data-category="全部">全部</button>
+            <button class="chip" data-category="专业教材">专业教材</button>
+            <button class="chip" data-category="公共课">公共课</button>
+            <button class="chip" data-category="考研考证">考研考证</button>
+          </div>
+
+          <label class="select-wrap">
+            <span class="sr-only">排序</span>
+            <select id="sortSelect">
+              <option value="recommend">推荐排序</option>
+              <option value="newest">最新发布</option>
+              <option value="priceAsc">价格从低到高</option>
+              <option value="priceDesc">价格从高到低</option>
+              <option value="discount">折扣最大</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid" id="bookGrid"></div>
+
+      <div class="empty" id="emptyState" hidden>
+        <div class="empty-emoji">🔍</div>
+        <h3>没找到这本书</h3>
+        <p>换个关键词试试，或者直接发布一条求购，让有书的同学看到你。</p>
+        <button class="btn btn-ghost" id="btnResetFilter">清除筛选条件</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 交易流程 ================= -->
+  <section class="section how" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>三步把书带走</h2>
+        <p>不用挂闲鱼、不用扯快递，同校同学当面交接。</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <span class="step-no">01</span>
+          <h3>挑一本</h3>
+          <p>看清成色和卖家备注，有手写笔记的书通常更值——那都是别人的期末重点。</p>
+        </div>
+        <div class="step">
+          <span class="step-no">02</span>
+          <h3>下预订</h3>
+          <p>留下昵称和微信，书立刻置为「已预订」，不会被别人抢走。</p>
+        </div>
+        <div class="step">
+          <span class="step-no">03</span>
+          <h3>当面验书</h3>
+          <p>约在宿舍楼下或图书馆门口，翻一遍再付款，不满意可以直说。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 成交动态 ================= -->
+  <section class="section orders" id="orders">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>最近的预订</h2>
+        <p>数据来自平台实时订单，联系方式已脱敏。</p>
+      </div>
+      <ul class="order-list" id="orderList">
+        <li class="order-empty">还没有预订记录，做第一个吧。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= 页脚 ================= -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark small">书</span>
+      <div>
+        <strong>书循环</strong>
+        <p>让每一本课本都被读完，而不是被扔掉。</p>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <span>Node + Express · 端口 3000</span>
+      <button class="link-btn" id="btnReset">重置示例数据</button>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= 详情弹窗 ================= -->
+<div class="modal" id="detailModal" hidden>
+  <div class="modal-mask" data-close="detail"></div>
+  <div class="modal-card modal-lg" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <button class="modal-close" data-close="detail" aria-label="关闭">×</button>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ================= 下单弹窗 ================= -->
+<div class="modal" id="buyModal" hidden>
+  <div class="modal-mask" data-close="buy"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="buyTitle">
+    <button class="modal-close" data-close="buy" aria-label="关闭">×</button>
+    <div class="modal-head">
+      <h3 id="buyTitle">预订这本书</h3>
+      <p id="buySubtitle" class="muted">填写联系方式，卖家会主动找你。</p>
+    </div>
+    <div id="buyFormWrap">
+      <form class="form" id="buyForm" novalidate>
+        <input type="hidden" name="bookId" id="buyBookId" />
+        <label class="field">
+          <span>你的昵称 <i>*</i></span>
+          <input name="buyerName" maxlength="20" placeholder="比如：23级 小周" required />
+        </label>
+        <label class="field">
+          <span>微信 / 手机号 <i>*</i></span>
+          <input name="buyerContact" maxlength="30" placeholder="卖家通过这个联系你" required />
+        </label>
+        <label class="field">
+          <span>约在哪见面</span>
+          <input name="meetup" maxlength="30" placeholder="8栋楼下 / 图书馆门口" />
+        </label>
+        <label class="field">
+          <span>留言给卖家</span>
+          <textarea name="message" rows="2" maxlength="120" placeholder="我今晚八点后都在宿舍，方便的话喊我"></textarea>
+        </label>
+        <p class="form-error" id="buyError" hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" id="buySubmit">确认预订</button>
+        <p class="form-tip">提交即表示你同意当面验书后再付款。</p>
+      </form>
+    </div>
+    <div id="buySuccess" hidden></div>
+  </div>
+</div>
+
+<!-- ================= 发布弹窗 ================= -->
+<div class="modal" id="publishModal" hidden>
+  <div class="modal-mask" data-close="publish"></div>
+  <div class="modal-card modal-lg" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
+    <button class="modal-close" data-close="publish" aria-label="关闭">×</button>
+    <div class="modal-head">
+      <h3 id="publishTitle">发布一本旧书</h3>
+      <p class="muted">填得越具体，卖得越快。带笔记和重点的书最抢手。</p>
+    </div>
+    <form class="form grid-form" id="publishForm" novalidate>
+      <label class="field span2">
+        <span>书名 <i>*</i></span>
+        <input name="title" maxlength="40" placeholder="化工原理（上册）第5版" required />
+      </label>
+      <label class="field">
+        <span>课程 / 科目 <i>*</i></span>
+        <input name="subject" maxlength="20" placeholder="化工原理" required />
+      </label>
+      <label class="field">
+        <span>班级 / 老师</span>
+        <input name="course" maxlength="20" placeholder="王老师班" />
+      </label>
+      <label class="field">
+        <span>分类 <i>*</i></span>
+        <select name="category" required>
+          <option value="专业教材">专业教材</option>
+          <option value="公共课">公共课</option>
+          <option value="考研考证">考研考证</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>成色 <i>*</i></span>
+        <select name="condition" required>
+          <option value="有笔记标注">有笔记标注</option>
+          <option value="九成新">九成新</option>
+          <option value="八成新">八成新</option>
+          <option value="七成新">七成新</option>
+          <option value="轻微磨损">轻微磨损</option>
+          <option value="全新">全新</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>售价（元） <i>*</i></span>
+        <input name="price" type="number" min="0.01" step="0.5" placeholder="20" required />
+      </label>
+      <label class="field">
+        <span>原价（元）</span>
+        <input name="originalPrice" type="number" min="0" step="0.5" placeholder="59" />
+      </label>
+      <label class="field">
+        <span>你的昵称 <i>*</i></span>
+        <input name="sellerName" maxlength="20" placeholder="陈学长" required />
+      </label>
+      <label class="field">
+        <span>年级</span>
+        <input name="grade" maxlength="10" placeholder="大三" />
+      </label>
+      <label class="field">
+        <span>取书地点</span>
+        <input name="campus" maxlength="20" placeholder="8栋宿舍" />
+      </label>
+      <label class="field">
+        <span>联系方式</span>
+        <input name="contact" maxlength="30" placeholder="微信 chen_pr" />
+      </label>
+      <label class="field span2">
+        <span>补充说明</span>
+        <input name="note" maxlength="80" placeholder="含手写期末重点整理，8栋可自提" />
+      </label>
+      <p class="form-error span2" id="publishError" hidden></p>
+      <div class="form-actions span2">
+        <button class="btn btn-ghost" type="button" data-close="publish">取消</button>
+        <button class="btn btn-primary" type="submit" id="publishSubmit">发布到首页</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
