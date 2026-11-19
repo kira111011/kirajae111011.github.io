@@ -102,12 +102,11 @@ async function api(path, options = {}) {
     throw error;
   }
 
-  return payload;
 return payload;
 }
 
 // 渲染卡片
-function cardHTML(book) {
+
   /* ---------------------------------------------------------------- 渲染卡片 */
   function cardHTML(book) {
     const reserved = book.status === '已预订';
