@@ -477,7 +477,7 @@ function notifyWanted(fresh){
 
 // ===== 本地安全支付后端地址 =====
 // 电脑访问用 localhost；手机访问请改成你的电脑局域网 IP，例如 http://192.168.1.8:3000
-const API_BASE = "https://bookloop-api.33480724.workers.dev";
+const API_BASE = "";
 const SHARECODE = "";  // 本地模式不再需要 sharecode
 
 function apiUrl(path){
@@ -599,7 +599,7 @@ async function getJSON(path,ms=8000){
 async function pollNow(){
  if(!SYNCED){ await initShared(); return; }
  try{
-  const d=await getJSON(apiUrl("/books"));
+  const d=await getJSON(apiUrl("/api/data"));
   failCount=0; offlineNotified=false; SYNCED=true; setBadge(true);
   adopt(d);
  }catch(e){
