@@ -72,25 +72,42 @@
     }, 2600);
   }
 
-  async function api(path, options) {
-    const res = await fetch(path, {
-      headers: { 'Content-Type': 'application/json' },
-      ...options,
-    });
-    let payload = null;
-    try {
-      payload = await res.json();
-    } catch (err) {
-      payload = { ok: false, message: '服务器返回异常' };
+  const API_BASE = 'https://bookloop-api.33480724.workers.dev';
+
+async function api(path, options = {}) {
+  const apiPath = path.startsWith('/api/')
+    ? path.slice(4)
+    : path;
+
+  const res = await fetch(API_BASE + apiPath, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
     }
-    if (!res.ok || payload.ok === false) {
-      const error = new Error(payload.message || `请求失败（${res.status}）`);
-      error.payload = payload;
-      throw error;
-    }
-    return payload;
+  });
+
+  let payload;
+  try {
+    payload = await res.json();
+  } catch (err) {
+    throw new Error('服务器返回异常');
   }
 
+  if (!res.ok || payload.ok === false) {
+    const error = new Error(
+      payload.message || payload.error || `请求失败 (${res.status})`
+    );
+    error.payload = payload;
+    throw error;
+  }
+
+  return payload;
+return payload;
+}
+
+// 渲染卡片
+function cardHTML(book) {
   /* ---------------------------------------------------------------- 渲染卡片 */
   function cardHTML(book) {
     const reserved = book.status === '已预订';
@@ -239,9 +256,19 @@
     });
 
     try {
-      const { data, counts } = await api(`/api/books?${params.toString()}`);
-      state.books = data;
-      state.counts = counts || {};
+     const result = await api(`/api/books?${params.toString()}`);
+state.books = Array.isArray(result.books)
+  ? result.books.map(book => ({
+      ...book,
+      category: book.category ?? book.cat ?? '其他',
+      condition: book.condition ?? book.cond ?? '未填写',
+      originalPrice: book.originalPrice ?? book.orig ?? null,
+      status: book.status ?? (book.sold ? '已售出' : '在售'),
+      icon: book.icon ?? '📚',
+      wantCount: book.wantCount ?? 0
+    }))
+  : [];
+state.counts = result.counts || {};
       state.error = null;
       renderChips();
     } catch (err) {
